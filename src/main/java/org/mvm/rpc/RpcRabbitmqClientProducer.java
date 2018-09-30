@@ -7,6 +7,9 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.UUID;
 
+import static org.mvm.RabbitConfiguration.EXCHANGE_POC;
+import static org.mvm.RabbitConfiguration.ROUTING_KEY_POC;
+
 @Log4j2
 public class RpcRabbitmqClientProducer {
     public static void main(String[] args) {
@@ -24,13 +27,12 @@ public class RpcRabbitmqClientProducer {
             String correlationId = UUID.randomUUID().toString();
             log.info("> connection is open: " + connection.isOpen() + " / CorrelationID: " + correlationId);
 
-            RpcClient rpcClient = new RpcClient(channel, "poc.topic.exchange", "poc.rk");
+            RpcClient rpcClient = new RpcClient(channel, EXCHANGE_POC, ROUTING_KEY_POC);
 
-            RpcMessage message = new RpcMessage();
-            message.setValue("AMQP Java Client");
+            RpcMessage message = new RpcMessage("AMQP Java Client");
             ObjectMapper objectMapper = new ObjectMapper();
 
-            log.info("> sending request");
+            log.info("> sending request...");
             RpcClient.Response response = rpcClient.doCall(
                     new AMQP.BasicProperties.Builder()
                             .contentType("application/json")
@@ -44,7 +46,7 @@ public class RpcRabbitmqClientProducer {
                             .build(),
                     objectMapper.writeValueAsBytes(message));
 
-            log.info("> receiving response");
+            log.info("> receiving response:");
             log.info("> Properties: " + response.getProperties().toString());
             log.info("> Body: " + objectMapper.readValue(response.getBody(), RpcMessage.class));
         } catch (Exception e) {

@@ -1,9 +1,6 @@
 package org.mvm;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,6 +14,12 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class RabbitConfiguration {
+    public final static String QUEUE_POC = "poc.queue";
+
+    public final static String EXCHANGE_POC = "poc.topic.exchange";
+
+    public final static String ROUTING_KEY_POC = "poc.rk.exchange";
+
     @Bean
     public ConnectionFactory defaultConnectionFactory(Environment environment) {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
@@ -56,17 +59,17 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange("poc.topic.exchange");
+    public Exchange exchange() {
+        return ExchangeBuilder.topicExchange(EXCHANGE_POC).build();
     }
 
     @Bean
     public Queue queue() {
-        return new Queue("poc.queue", false);
+        return QueueBuilder.nonDurable(QUEUE_POC).build();
     }
 
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("poc.rk");
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_POC);
     }
 }

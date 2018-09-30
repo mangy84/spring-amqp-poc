@@ -9,6 +9,8 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+import static org.mvm.RabbitConfiguration.QUEUE_POC;
+
 @Log4j2
 @Component
 public class RpcSpringAmqpConsumer {
@@ -20,7 +22,7 @@ public class RpcSpringAmqpConsumer {
         this.objectMapper = objectMapper;
     }
 
-    @RabbitListener(queues = "poc.queue")
+    @RabbitListener(queues = QUEUE_POC)
     public void onMessage(Message<RpcMessage> message) throws JsonProcessingException {
         String replyTo = message.getHeaders().get(AmqpHeaders.REPLY_TO, String.class);
         String correlationId = message.getHeaders().get(AmqpHeaders.CORRELATION_ID, String.class);
