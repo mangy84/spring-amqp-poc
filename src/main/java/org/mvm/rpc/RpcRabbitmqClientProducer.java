@@ -7,8 +7,8 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.UUID;
 
-import static org.mvm.RabbitConfiguration.EXCHANGE_POC;
-import static org.mvm.RabbitConfiguration.ROUTING_KEY_POC;
+import static org.mvm.RabbitConfiguration.TOPIC_EXCHANGE_POC;
+import static org.mvm.RabbitConfiguration.TOPIC_EXCHANGE_ROUTING_KEY_POC;
 
 @Log4j2
 public class RpcRabbitmqClientProducer {
@@ -27,7 +27,7 @@ public class RpcRabbitmqClientProducer {
             String correlationId = UUID.randomUUID().toString();
             log.info("> connection is open: " + connection.isOpen() + " / CorrelationID: " + correlationId);
 
-            RpcClient rpcClient = new RpcClient(channel, EXCHANGE_POC, ROUTING_KEY_POC);
+            RpcClient rpcClient = new RpcClient(channel, TOPIC_EXCHANGE_POC, TOPIC_EXCHANGE_ROUTING_KEY_POC);
 
             RpcMessage message = new RpcMessage("AMQP Java Client");
             ObjectMapper objectMapper = new ObjectMapper();

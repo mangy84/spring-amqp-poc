@@ -9,3 +9,5 @@ public class SpringAmqpPocApplication {
         SpringApplication.run(SpringAmqpPocApplication.class, args);
     }
 }
+
+// https://github.com/societe-generale/rabbitmq-advanced-spring-boot-starter

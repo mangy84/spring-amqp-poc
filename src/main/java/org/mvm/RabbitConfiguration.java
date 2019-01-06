@@ -14,11 +14,17 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class RabbitConfiguration {
-    public final static String QUEUE_POC = "poc.queue";
+    public static final String TOPIC_EXCHANGE_POC = "poc.topic.exchange";
 
-    public final static String EXCHANGE_POC = "poc.topic.exchange";
+    public static final String DIRECT_EXCHANGE_POC = "poc.direct.exchange";
 
-    public final static String ROUTING_KEY_POC = "poc.rk.exchange";
+    public static final String TOPIC_EXCHANGE_QUEUE_POC = "poc.topic.exchange.queue";
+
+    public static final String DIRECT_EXCHANGE_QUEUE_POC = "poc.direct.exchange.queue";
+
+    public static final String TOPIC_EXCHANGE_ROUTING_KEY_POC = "poc.topic.exchange.routing-key";
+
+    public static final String DIRECT_EXCHANGE_ROUTING_KEY_POC = "poc.direct.exchange.routing-key";
 
     @Bean
     public ConnectionFactory defaultConnectionFactory(Environment environment) {
@@ -59,17 +65,32 @@ public class RabbitConfiguration {
     }
 
     @Bean
-    public Exchange exchange() {
-        return ExchangeBuilder.topicExchange(EXCHANGE_POC).build();
+    public Exchange topicExchange() {
+        return ExchangeBuilder.topicExchange(TOPIC_EXCHANGE_POC).build();
     }
 
     @Bean
-    public Queue queue() {
-        return QueueBuilder.nonDurable(QUEUE_POC).build();
+    public Exchange directExchange() {
+        return ExchangeBuilder.directExchange(DIRECT_EXCHANGE_POC).build();
     }
 
     @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_POC);
+    public Queue topicExchangeQueue() {
+        return QueueBuilder.nonDurable(TOPIC_EXCHANGE_QUEUE_POC).build();
+    }
+
+    @Bean
+    public Queue directExchangeQueue() {
+        return QueueBuilder.nonDurable(DIRECT_EXCHANGE_QUEUE_POC).build();
+    }
+
+    @Bean
+    public Binding topicExchangeBinding(Queue topicExchangeQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(topicExchangeQueue).to(exchange).with(TOPIC_EXCHANGE_ROUTING_KEY_POC);
+    }
+
+    @Bean
+    public Binding directExchangeBinding(Queue directExchangeQueue, DirectExchange exchange) {
+        return BindingBuilder.bind(directExchangeQueue).to(exchange).with(DIRECT_EXCHANGE_ROUTING_KEY_POC);
     }
 }
